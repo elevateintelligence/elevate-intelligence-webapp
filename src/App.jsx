@@ -40,7 +40,7 @@ import {
 import axios from 'axios';
 import EntityWorkspace from './EntityWorkspace.jsx';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API = import.meta.env.VITE_API_URL || 'https://elevate-intelligence-api.onrender.com/api';
 const TEL = '+918169676574';
 const TEL2 = '+918286663068';
 const MAIL = 'info.elevateintelligence@gmail.com';

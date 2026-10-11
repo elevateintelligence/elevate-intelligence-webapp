@@ -12,10 +12,14 @@ import {
   Clock,
   Code2,
   Compass,
+  Facebook,
   Flame,
   Gift,
+  Github,
+  Globe,
   GraduationCap,
   Heart,
+  Instagram,
   Laptop,
   Layers,
   Linkedin,
@@ -37,14 +41,21 @@ import {
   Trophy,
   Users,
   X,
+  Youtube,
 } from 'lucide-react';
 import axios from 'axios';
+import emailjs from '@emailjs/browser';
 import EntityWorkspace from './EntityWorkspace.jsx';
 
 const API = import.meta.env.VITE_API_URL || 'https://elevate-intelligence-api.onrender.com/api';
 const TEL = '+918169676574';
 const TEL2 = '+918286663068';
 const MAIL = 'info.elevateintelligence@gmail.com';
+
+/* EmailJS — contact enquiry delivery */
+const EMAILJS_SERVICE_ID = 'elevateintelligence';
+const EMAILJS_TEMPLATE_ID = 'elevateintelligence';
+const EMAILJS_PUBLIC_KEY = 'cCN3wm3jj4Ofg9oAv';
 
 /* ------------------------------------------------------------------ *
  *  Content
@@ -254,6 +265,15 @@ const faqs = [
   },
 ];
 
+const SOCIAL_ICONS = {
+  linkedin: Linkedin,
+  instagram: Instagram,
+  facebook: Facebook,
+  youtube: Youtube,
+  github: Github,
+  website: Globe,
+};
+
 const members = [
   {
     name: 'Pawan Gupta',
@@ -261,6 +281,7 @@ const members = [
     image: '/images/team/pawan-gupta.jpeg',
     focus: 'Mathematics & Science mentoring',
     linkedin: null,
+    socials: [{ kind: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/pawan24aug/' }],
   },
   {
     name: 'Suraj Sahani',
@@ -268,6 +289,59 @@ const members = [
     image: '/images/team/suraj-sahani.jpeg',
     focus: 'Programming & career technology',
     linkedin: 'https://www.linkedin.com/in/engineersurajsahani/',
+    socials: [
+      { kind: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/engineersurajsahani/' },
+      { kind: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/engineersurajsahani/' },
+      {
+        kind: 'facebook',
+        label: 'Facebook',
+        href: 'https://www.facebook.com/people/Suraj-Sahani/100077668355471/',
+      },
+      { kind: 'website', label: 'Portfolio', href: 'https://engineersurajsahani.netlify.app/' },
+      {
+        kind: 'website',
+        label: 'Software Engineer Portfolio',
+        href: 'https://softwareengineersurajsahani.netlify.app/',
+      },
+    ],
+  },
+];
+
+const socialGroups = [
+  {
+    name: 'Elevate Intelligence',
+    links: [{ kind: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/elevate_intelligence/' }],
+  },
+  {
+    name: 'Elevate Coders Academy',
+    links: [
+      { kind: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/company/elevatecodersacademy/' },
+      { kind: 'github', label: 'GitHub', href: 'https://github.com/engineersurajsahani' },
+      { kind: 'youtube', label: 'YouTube', href: 'https://www.youtube.com/@elevatecoders' },
+      { kind: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/elevate.coders.academy' },
+    ],
+  },
+  {
+    name: 'Suraj Sahani',
+    links: [
+      { kind: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/engineersurajsahani/' },
+      { kind: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/engineersurajsahani/' },
+      {
+        kind: 'facebook',
+        label: 'Facebook',
+        href: 'https://www.facebook.com/people/Suraj-Sahani/100077668355471/',
+      },
+      { kind: 'website', label: 'Portfolio', href: 'https://engineersurajsahani.netlify.app/' },
+      {
+        kind: 'website',
+        label: 'Software Engineer Portfolio',
+        href: 'https://softwareengineersurajsahani.netlify.app/',
+      },
+    ],
+  },
+  {
+    name: 'Pawan Gupta',
+    links: [{ kind: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/pawan24aug/' }],
   },
 ];
 
@@ -580,12 +654,28 @@ function Footer() {
                 <Mail size={15} />
               </a>
               <a
+                href="https://www.instagram.com/elevate_intelligence/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Elevate Intelligence on Instagram"
+              >
+                <Instagram size={15} />
+              </a>
+              <a
                 href="https://www.linkedin.com/in/engineersurajsahani/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={15} />
+              </a>
+              <a
+                href="https://www.youtube.com/@elevatecoders"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Elevate Coders Academy on YouTube"
+              >
+                <Youtube size={15} />
               </a>
             </div>
           </div>
@@ -623,6 +713,25 @@ function Footer() {
               </li>
             </ul>
           </div>
+        </div>
+        <div className="ei-social-groups">
+          {socialGroups.map((group) => (
+            <div className="ei-social-group" key={group.name}>
+              <h5>{group.name}</h5>
+              <ul>
+                {group.links.map((link) => {
+                  const Icon = SOCIAL_ICONS[link.kind] || Globe;
+                  return (
+                    <li key={link.href}>
+                      <a href={link.href} target="_blank" rel="noreferrer">
+                        <Icon size={14} /> {link.label} <ArrowUpRight size={12} />
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
         </div>
         <div className="ei-footer-bottom">
           <span>© {new Date().getFullYear()} Elevate Intelligence. All rights reserved.</span>
@@ -1104,10 +1213,24 @@ function MentorsSection({ full = false }) {
                 <div className="ei-mentor-body">
                   <span className="ei-mentor-role">{member.role}</span>
                   <h3>{member.name}</h3>
-                  {member.linkedin && (
-                    <a className="ei-btn ei-btn-soft ei-btn-sm" href={member.linkedin} target="_blank" rel="noreferrer">
-                      <Linkedin size={13} /> Connect on LinkedIn <ArrowUpRight size={13} />
-                    </a>
+                  {member.socials?.length > 0 && (
+                    <div className="ei-mentor-socials">
+                      {member.socials.map((link) => {
+                        const Icon = SOCIAL_ICONS[link.kind] || Globe;
+                        return (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            aria-label={`${member.name} on ${link.label}`}
+                            title={link.label}
+                          >
+                            <Icon size={15} />
+                          </a>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
               </article>
@@ -1389,40 +1512,76 @@ function TeamPage() {
 
 function ContactForm() {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+
+  async function submit(e) {
+    e.preventDefault();
+    const values = new FormData(e.currentTarget);
+    const name = values.get('name');
+    const email = values.get('email');
+    const mobile = values.get('mobile');
+    const interest = values.get('interest');
+    const message = values.get('message');
+    setSending(true);
+    setError('');
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: name,
+          from_email: email,
+          reply_to: email,
+          mobile,
+          interest,
+          message,
+          subject: `New enquiry from ${name} — ${interest}`,
+        },
+        { publicKey: EMAILJS_PUBLIC_KEY },
+      );
+      setSent(true);
+    } catch (err) {
+      console.error('EmailJS send failed:', err);
+      setError('We could not send your enquiry right now. Please try again or call us directly.');
+    } finally {
+      setSending(false);
+    }
+  }
+
   return (
-    <form
-      className="ei-form reveal"
-      onSubmit={(e) => {
-        e.preventDefault();
-        const values = new FormData(e.currentTarget);
-        const body = [
-          `Name: ${values.get('name')}`,
-          `Contact: ${values.get('contact')}`,
-          `Interested in: ${values.get('interest')}`,
-          `Message: ${values.get('message') || 'Not provided'}`,
-        ].join('\n');
-        window.location.href = `mailto:${MAIL}?subject=${encodeURIComponent('Course enquiry')}&body=${encodeURIComponent(body)}`;
-        setSent(true);
-      }}
-    >
+    <form className="ei-form reveal" onSubmit={submit}>
       <span className="ei-pill">A QUICK HELLO</span>
-      <h3>{sent ? 'Your email app should open' : 'What would you like to learn?'}</h3>
+      <h3>{sent ? 'Thank you — we have your enquiry' : 'What would you like to learn?'}</h3>
       {sent ? (
         <p className="ei-form-sent">
-          Review your enquiry in your email app and send it to our team. You can also call us directly.
+          Your message has reached our team. We usually reply within one working day — you can also call us directly.
         </p>
       ) : (
         <>
           <label>
-            Your name
-            <input name="name" required placeholder="e.g. Aarav Sharma" />
+            Your name *
+            <input name="name" required placeholder="e.g. Aarav Sharma" autoComplete="name" />
           </label>
           <label>
-            Email or phone
-            <input name="contact" required placeholder="How can we reach you?" />
+            Email address *
+            <input name="email" type="email" required placeholder="you@example.com" autoComplete="email" />
           </label>
           <label>
-            I am interested in
+            Mobile number *
+            <input
+              name="mobile"
+              type="tel"
+              required
+              inputMode="tel"
+              pattern="[0-9+][0-9 ()-]{7,17}"
+              title="Enter a valid mobile number (7–18 digits)"
+              placeholder="+91 98765 43210"
+              autoComplete="tel"
+            />
+          </label>
+          <label>
+            I am interested in *
             <select name="interest" required defaultValue="">
               <option value="" disabled>
                 Choose a learning path
@@ -1434,11 +1593,12 @@ function ContactForm() {
             </select>
           </label>
           <label>
-            A little more (optional)
-            <textarea name="message" rows="3" placeholder="Tell us what you are looking for..." />
+            Your message *
+            <textarea name="message" rows="3" required placeholder="Tell us what you are looking for..." />
           </label>
-          <button className="ei-btn ei-btn-primary ei-btn-block">
-            Continue to email <ArrowRight size={15} />
+          {error && <p className="ei-form-error">{error}</p>}
+          <button className="ei-btn ei-btn-primary ei-btn-block" disabled={sending}>
+            {sending ? 'Sending your enquiry…' : 'Send enquiry'} <ArrowRight size={15} />
           </button>
         </>
       )}

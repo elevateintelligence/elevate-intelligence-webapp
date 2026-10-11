@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Download, Pencil, Plus, Trash2, X } from 'lucide-react';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const entities = {
@@ -172,34 +172,39 @@ export default function EntityWorkspace({ entity, token, head }) {
     );
   }
   return (
-    <section className="workspace">
-      <div className="workspace-head">
+    <section className="ei-work">
+      <div className="ei-work-head">
         <div>
-          <span className="eyebrow">BRANCH MANAGEMENT</span>
+          <span className="ei-pill">Branch management</span>
           <h2>
-            {entity} <em>records.</em>
+            {entity} <span>records.</span>
           </h2>
           <p>
             Manage {entity.toLowerCase()} for {head?.branch?.name || 'your branch'}.
           </p>
         </div>
-        <div className="workspace-actions">
-          <select aria-label="Report period" value={period} onChange={(e) => setPeriod(e.target.value)}>
+        <div className="ei-work-actions">
+          <select
+            className="ei-select"
+            aria-label="Report period"
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+          >
             <option value="daily">Daily report</option>
             <option value="weekly">Weekly report</option>
             <option value="monthly">Monthly report</option>
             <option value="yearly">Yearly report</option>
           </select>
-          <button className="button button-quiet export-btn" onClick={download}>
-            ↓ Download CSV
+          <button className="ei-btn ei-btn-outline" onClick={download}>
+            <Download size={15} /> Download CSV
           </button>
-          <button className="button button-primary" onClick={startAdd}>
-            + Add {entity === 'Salary Paid' ? 'salary record' : entity.slice(0, -1)}
+          <button className="ei-btn ei-btn-primary" onClick={startAdd}>
+            <Plus size={15} /> Add {entity === 'Salary Paid' ? 'salary record' : entity.slice(0, -1)}
           </button>
         </div>
       </div>
-      {error && <div className="api-notice">{error}</div>}
-      <div className="data-toolbar">
+      {error && <div className="ei-notice">{error}</div>}
+      <div className="ei-toolbar">
         <div>
           Showing <b>{visible.length}</b> {entity.toLowerCase()}
           <span> · Branch-scoped data</span>
@@ -210,7 +215,7 @@ export default function EntityWorkspace({ entity, token, head }) {
           onChange={(e) => setForm({ ...form, search: e.target.value })}
         />
       </div>
-      <div className="table-wrap">
+      <div className="ei-table-wrap">
         <table>
           <thead>
             <tr>
@@ -228,7 +233,7 @@ export default function EntityWorkspace({ entity, token, head }) {
             {visible.map((row) => (
               <tr key={row._id}>
                 <td>
-                  <div className="record-name">
+                  <div className="ei-record">
                     <span>{recordName(row).slice(0, 1).toUpperCase()}</span>
                     <b>{recordName(row)}</b>
                   </div>
@@ -240,18 +245,18 @@ export default function EntityWorkspace({ entity, token, head }) {
                     <td key={f}>{row[f] instanceof Object ? JSON.stringify(row[f]) : (row[f] ?? '—')}</td>
                   ))}
                 <td>
-                  <button className="edit-row" onClick={() => startEdit(row)} aria-label="Edit record">
-                    ✎
+                  <button className="ei-row-btn" onClick={() => startEdit(row)} aria-label="Edit record">
+                    <Pencil size={14} />
                   </button>{' '}
-                  <button className="delete-row" onClick={() => remove(row._id)} aria-label="Delete record">
-                    ×
+                  <button className="ei-row-btn danger" onClick={() => remove(row._id)} aria-label="Delete record">
+                    <Trash2 size={14} />
                   </button>
                 </td>
               </tr>
             ))}
             {visible.length === 0 && (
               <tr>
-                <td colSpan={7} className="empty-state">
+                <td colSpan={7} className="ei-empty">
                   <span>✳</span>
                   <b>No {entity.toLowerCase()} yet</b>
                   <small>Records you add for this branch will appear here.</small>
@@ -261,22 +266,22 @@ export default function EntityWorkspace({ entity, token, head }) {
           </tbody>
         </table>
       </div>
-      <div className="report-tip">
+      <div className="ei-tip">
         <span>✳</span>
         <p>Choose a report period and download this branch's {entity.toLowerCase()} as a CSV file.</p>
       </div>
       {open && (
-        <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && setOpen(false)}>
-          <form className="record-modal" onSubmit={save}>
-            <button className="modal-close" type="button" onClick={() => setOpen(false)}>
-              ×
+        <div className="ei-modal-backdrop" onClick={(e) => e.target === e.currentTarget && setOpen(false)}>
+          <form className="ei-modal" onSubmit={save}>
+            <button className="ei-modal-close" type="button" onClick={() => setOpen(false)} aria-label="Close">
+              <X size={16} />
             </button>
-            <span className="course-eyebrow">BRANCH RECORD</span>
+            <span className="ei-pill">Branch record</span>
             <h3>
               {editing ? 'Edit' : 'Add'} {entity === 'Salary Paid' ? 'salary record' : entity.slice(0, -1)}
             </h3>
             <p>Fields with * are required.</p>
-            <div className="modal-fields">
+            <div className="ei-fields">
               {cfg.fields
                 .filter(
                   (key) =>
@@ -399,7 +404,7 @@ export default function EntityWorkspace({ entity, token, head }) {
                       ))}
                     </select>
                   </label>
-                  <label>
+                  <label className="ei-span-2">
                     Courses (select one or more)
                     <select
                       multiple
@@ -423,12 +428,14 @@ export default function EntityWorkspace({ entity, token, head }) {
                       placeholder={editing ? 'Leave blank to keep existing' : 'Optional'}
                     />
                   </label>
-                  <p className="form-hint">Total fee is calculated from selected courses. You can adjust it above.</p>
+                  <p className="ei-field-hint">
+                    Total fee is calculated from selected courses. You can adjust it above.
+                  </p>
                 </>
               )}
             </div>
-            {error && <p className="form-error">{error}</p>}
-            <button className="button button-primary" disabled={saving}>
+            {error && <p className="ei-form-error">{error}</p>}
+            <button className="ei-btn ei-btn-primary" disabled={saving}>
               {saving ? 'Saving…' : editing ? 'Update record' : 'Save record'} <ArrowRight size={15} />
             </button>
           </form>

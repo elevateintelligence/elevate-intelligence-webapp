@@ -19,6 +19,7 @@ import {
   Laptop,
   Layers,
   Linkedin,
+  LogOut,
   Mail,
   MapPin,
   Menu,
@@ -1513,55 +1514,66 @@ function LoginPage() {
   }
   return (
     <Shell>
-      <section className="login-layout">
-        <div className="login-brand-panel">
-          <div className="login-orbit">
-            <div />
-            <div />
-            <img src="/logo.jpeg" alt="Elevate Intelligence" />
-          </div>
-          <span className="eyebrow">ELEVATE INTELLIGENCE · BRANCH PORTAL</span>
-          <h2>
-            Every detail,
-            <br />
-            <em>in good hands.</em>
-          </h2>
-          <p>Securely manage your branch, students, faculty and day-to-day learning.</p>
-        </div>
-        <div className="login-form-wrap">
-          <div className="login-form-head">
-            <span className="course-eyebrow">WELCOME BACK</span>
+      <section className="ei-auth grid-paper">
+        <span className="ei-hero-glow g1" />
+        <span className="blob blob-b" />
+        <div className="ei-container ei-auth-grid">
+          <aside className="ei-auth-aside reveal">
+            <span className="ei-auth-orbit" aria-hidden>
+              <i />
+              <i />
+              <img src="/logo.jpeg" alt="Elevate Intelligence" />
+            </span>
+            <span className="ei-pill">BRANCH PORTAL</span>
+            <h2>
+              Every detail, <span className="ei-auth-hl">in good hands.</span>
+            </h2>
+            <p>Securely manage your branch, students, faculty and day-to-day learning.</p>
+            <ul className="ei-auth-points">
+              <li>
+                <Users size={15} /> Branch-scoped student &amp; faculty records
+              </li>
+              <li>
+                <TrendingUp size={15} /> Fees, attendance and salary in one place
+              </li>
+              <li>
+                <ShieldCheck size={15} /> Secure sign-in for the branch head
+              </li>
+            </ul>
+          </aside>
+          <div className="ei-auth-card ei-form reveal" style={delay(90)}>
+            <span className="ei-pill">WELCOME BACK</span>
             <h1>Head login</h1>
-            <p>Sign in with your branch or head email/mobile.</p>
+            <p className="ei-auth-sub">Sign in with your branch or head email/mobile.</p>
+            <form onSubmit={submit}>
+              <label>
+                Branch or head email / mobile
+                <input
+                  required
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder="Email address or mobile number"
+                  autoComplete="username"
+                />
+              </label>
+              <label>
+                Password
+                <input
+                  required
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
+                />
+              </label>
+              {error && <p className="ei-form-error">{error}</p>}
+              <button className="ei-btn ei-btn-primary ei-btn-block ei-btn-lg" disabled={loading}>
+                {loading ? 'Signing in…' : 'Sign in to your branch'} <ArrowRight size={16} />
+              </button>
+              <small className="ei-auth-hint">Access is limited to the head linked to this branch.</small>
+            </form>
           </div>
-          <form className="contact-form login-form" onSubmit={submit}>
-            <label>
-              Branch or head email / mobile
-              <input
-                required
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="Email address or mobile number"
-                autoComplete="username"
-              />
-            </label>
-            <label>
-              Password
-              <input
-                required
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                autoComplete="current-password"
-              />
-            </label>
-            {error && <p className="form-error">{error}</p>}
-            <button className="button button-primary" disabled={loading}>
-              {loading ? 'Signing in…' : 'Sign in to your branch'} <ArrowRight size={16} />
-            </button>
-            <small className="login-hint">Access is limited to the head linked to this branch.</small>
-          </form>
         </div>
       </section>
     </Shell>
@@ -1570,11 +1582,11 @@ function LoginPage() {
 
 function Metric({ label, value, icon, tone }) {
   return (
-    <div className="metric-card">
-      <span className={`metric-icon ${tone}`}>{icon}</span>
-      <span className="metric-label">{label}</span>
+    <div className="ei-metric">
+      <span className={`ei-metric-icon ${tone}`}>{icon}</span>
+      <span className="ei-metric-label">{label}</span>
       <b>{value}</b>
-      <span className="metric-foot">BRANCH TOTAL</span>
+      <span className="ei-metric-foot">Branch total</span>
     </div>
   );
 }
@@ -1609,35 +1621,47 @@ function Portal() {
     location.href = '/login';
   }
   return (
-    <div className="portal">
-      <aside className={`portal-side ${menu ? 'portal-side-open' : ''}`}>
-        <Brand />
-        <div className="branch-label">BRANCH WORKSPACE</div>
-        <div className="branch-card">
-          <span className="branch-avatar">{head?.name?.slice(0, 1) || 'H'}</span>
+    <div className="ei-shell">
+      <aside className={`ei-side ${menu ? 'open' : ''}`}>
+        <div className="ei-side-top">
+          <Brand />
+          <button className="ei-side-close" onClick={() => setMenu(false)} aria-label="Close menu">
+            <X size={16} />
+          </button>
+        </div>
+        <span className="ei-side-label">Branch workspace</span>
+        <div className="ei-branch-card">
+          <span className="ei-branch-avatar">{head?.name?.slice(0, 1) || 'H'}</span>
           <span>
             <b>{head?.branch?.name || head?.branchName || 'Your branch'}</b>
             <small>{head?.name || 'Branch head'}</small>
           </span>
           <ChevronDown size={15} />
         </div>
-        <div className="portal-nav-label">MANAGE</div>
-        {tabs.map((t, i) => (
-          <button
-            key={t}
-            className={`portal-nav-item ${tab === t ? 'active' : ''}`}
-            onClick={() => {
-              setTab(t);
-              setMenu(false);
-            }}
-          >
-            <span>{['◫', '◎', '♙', '▱', '↗', '◷', '₹'][i]}</span>
-            {t}
-            {t === 'Students' && records.studentCount > 0 && <small>{records.studentCount}</small>}
+        <span className="ei-side-label">Manage</span>
+        <nav className="ei-side-nav">
+          {tabs.map((t, i) => {
+            const Icon = [Layers, Users, GraduationCap, BookOpen, TrendingUp, Clock, Trophy][i];
+            return (
+              <button
+                key={t}
+                className={`ei-side-link ${tab === t ? 'active' : ''}`}
+                onClick={() => {
+                  setTab(t);
+                  setMenu(false);
+                }}
+              >
+                <Icon />
+                {t}
+                {t === 'Students' && records.studentCount > 0 && <small>{records.studentCount}</small>}
+              </button>
+            );
+          })}
+        </nav>
+        <div className="ei-side-foot">
+          <button onClick={logout}>
+            <LogOut size={15} /> Sign out
           </button>
-        ))}
-        <div className="portal-sidebar-bottom">
-          <button onClick={logout}>↪ Sign out</button>
           <small>
             Elevate Intelligence
             <br />
@@ -1645,37 +1669,37 @@ function Portal() {
           </small>
         </div>
       </aside>
-      <main className="portal-main">
-        <header className="portal-header">
-          <button className="menu-btn portal-menu-btn" onClick={() => setMenu(!menu)} aria-label="Toggle sidebar">
-            <Menu />
+      <div className={`ei-side-backdrop ${menu ? 'open' : ''}`} onClick={() => setMenu(false)} />
+      <main className="ei-main">
+        <header className="ei-topbar">
+          <button className="ei-menu-btn" onClick={() => setMenu(!menu)} aria-label="Toggle sidebar">
+            <Menu size={18} />
           </button>
           <div>
-            <span>
-              Branch portal <span className="crumb">/</span> {tab}
+            <span className="ei-crumb">
+              Branch portal <i>/</i> {tab}
             </span>
             <h1>
-              {tab === 'Overview' ? 'Good to see you' : tab} <em>{head?.name?.split(' ')[0] || ''}</em>
+              {tab === 'Overview' ? 'Good to see you' : tab} <span>{head?.name?.split(' ')[0] || ''}</span>
             </h1>
           </div>
-          <button className="head-profile">
-            <span>{head?.name?.slice(0, 1) || 'H'}</span>
-            {head?.name || 'Branch head'}
-            <ChevronDown size={14} />
-          </button>
+          <div className="ei-topbar-user">
+            <span className="ei-topbar-avatar">{head?.name?.slice(0, 1) || 'H'}</span>
+            <span>{head?.name || 'Branch head'}</span>
+          </div>
         </header>
-        {err && <div className="api-notice">{err}</div>}
+        {err && <div className="ei-notice">{err}</div>}
         {tab === 'Overview' ? (
           <>
-            <div className="portal-welcome">
+            <div className="ei-welcome">
               <div>
-                <span className="eyebrow">YOUR BRANCH AT A GLANCE</span>
+                <span className="ei-pill">YOUR BRANCH AT A GLANCE</span>
                 <h2>
-                  Make today <em>count.</em>
+                  Make today <span>count.</span>
                 </h2>
                 <p>Here is what is happening at {head?.branch?.name || head?.branchName || 'your branch'}.</p>
               </div>
-              <span className="today-date">
+              <span className="ei-date">
                 {new Intl.DateTimeFormat('en-IN', {
                   weekday: 'long',
                   day: 'numeric',
@@ -1684,76 +1708,86 @@ function Portal() {
                 }).format(new Date())}
               </span>
             </div>
-            <div className="metric-grid">
-              <Metric label="Total students" value={records.studentCount ?? '—'} icon="◎" tone="blue" />
-              <Metric label="Active faculty" value={records.facultyCount ?? '—'} icon="♙" tone="teal" />
+            <div className="ei-metrics">
+              <Metric
+                label="Total students"
+                value={records.studentCount ?? '—'}
+                icon={<Users size={18} />}
+                tone="blue"
+              />
+              <Metric
+                label="Active faculty"
+                value={records.facultyCount ?? '—'}
+                icon={<GraduationCap size={18} />}
+                tone="teal"
+              />
               <Metric
                 label="Fees collected"
                 value={
                   records.feesCollected != null ? `₹${Number(records.feesCollected).toLocaleString('en-IN')}` : '—'
                 }
-                icon="↗"
+                icon={<TrendingUp size={18} />}
                 tone="orange"
               />
               <Metric
                 label="Attendance today"
                 value={records.attendanceToday != null ? `${records.attendanceToday}%` : '—'}
-                icon="◷"
+                icon={<Clock size={18} />}
                 tone="purple"
               />
             </div>
-            <div className="portal-panels">
-              <div className="portal-panel">
-                <div className="panel-heading">
+            <div className="ei-panels">
+              <div className="ei-panel">
+                <div className="ei-panel-head">
                   <div>
-                    <span className="course-eyebrow">KEEP THINGS MOVING</span>
+                    <span className="ei-pill">KEEP THINGS MOVING</span>
                     <h3>Quick actions</h3>
                   </div>
                 </div>
-                <div className="quick-actions">
+                <div className="ei-quick">
                   <button onClick={() => setTab('Students')}>
-                    <span className="qa-icon qa-blue">
+                    <span className="ei-quick-icon blue">
                       <Users />
                     </span>
                     <span>
                       <b>Register a student</b>
                       <small>Add a learner to your branch</small>
                     </span>
-                    <ArrowUpRight />
+                    <ArrowUpRight size={16} />
                   </button>
                   <button onClick={() => setTab('Fees')}>
-                    <span className="qa-icon qa-teal">
+                    <span className="ei-quick-icon teal">
                       <span>₹</span>
                     </span>
                     <span>
                       <b>Record a fee payment</b>
                       <small>Keep payment history up to date</small>
                     </span>
-                    <ArrowUpRight />
+                    <ArrowUpRight size={16} />
                   </button>
                   <button onClick={() => setTab('Attendance')}>
-                    <span className="qa-icon qa-orange">
-                      <span>✓</span>
+                    <span className="ei-quick-icon orange">
+                      <Check size={18} />
                     </span>
                     <span>
                       <b>Mark attendance</b>
                       <small>Take today's roll call</small>
                     </span>
-                    <ArrowUpRight />
+                    <ArrowUpRight size={16} />
                   </button>
                 </div>
               </div>
-              <div className="portal-panel report-panel">
-                <div className="panel-heading">
+              <div className="ei-panel">
+                <div className="ei-panel-head">
                   <div>
-                    <span className="course-eyebrow">YOUR BRANCH</span>
+                    <span className="ei-pill">YOUR BRANCH</span>
                     <h3>Learning in focus</h3>
                   </div>
-                  <BookOpen />
+                  <BookOpen size={18} />
                 </div>
-                <div className="report-big">
-                  <span className="report-circle">
-                    <GraduationCap />
+                <div className="ei-focus">
+                  <span className="ei-focus-ring">
+                    <GraduationCap size={24} />
                   </span>
                   <p>
                     Every learner deserves a little more attention.
@@ -1761,37 +1795,37 @@ function Portal() {
                     <b>Keep building momentum.</b>
                   </p>
                 </div>
-                <div className="report-footer">
-                  <span>BRANCH STATUS</span>
+                <div className="ei-panel-foot">
+                  <span>Branch status</span>
                   <b>
                     <i /> Active workspace
                   </b>
                 </div>
               </div>
             </div>
-            <div className="portal-panel activity-panel">
-              <div className="panel-heading">
+            <div className="ei-panel ei-panel-wide">
+              <div className="ei-panel-head">
                 <div>
-                  <span className="course-eyebrow">YOUR DAILY RHYTHM</span>
+                  <span className="ei-pill">YOUR DAILY RHYTHM</span>
                   <h3>Branch overview</h3>
                 </div>
-                <span className="subtle-label">LIVE DATA</span>
+                <span className="ei-live">Live data</span>
               </div>
-              <div className="activity-stats">
+              <div className="ei-stats">
                 <div>
-                  <span>ENROLLED STUDENTS</span>
+                  <span>Enrolled students</span>
                   <b>{records.studentCount ?? '—'}</b>
                 </div>
                 <div>
-                  <span>FACULTY MEMBERS</span>
+                  <span>Faculty members</span>
                   <b>{records.facultyCount ?? '—'}</b>
                 </div>
                 <div>
-                  <span>COURSES OFFERED</span>
+                  <span>Courses offered</span>
                   <b>{records.courseCount ?? '—'}</b>
                 </div>
                 <div>
-                  <span>PAYMENTS RECORDED</span>
+                  <span>Payments recorded</span>
                   <b>{records.feeCount ?? '—'}</b>
                 </div>
               </div>
